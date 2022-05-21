@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class RestApi {
@@ -16,23 +16,24 @@ public class RestApi {
 			HttpURLConnection myConnet = (HttpURLConnection) SpringApi.openConnection();
 			
 			myConnet.setRequestMethod("GET");
-			myConnet.setRequestProperty("Content-Type", "application/json"); // header Content-Type Á¤º¸
-			myConnet.setRequestProperty("auth", "myAuth"); // headerÀÇ auth Á¤º¸
-			myConnet.setDoOutput(true); // ¼­¹ö·ÎºÎÅÍ ¹Ş´Â °ªÀÌ ÀÖ´Ù¸é true
+			myConnet.setRequestProperty("Content-Type", "application/json"); // header Content-Type ì •ë³´
+			myConnet.setRequestProperty("auth", "myAuth"); // headerì˜ auth ì •ë³´
+			myConnet.setDoOutput(true); // ì„œë²„ë¡œë¶€í„° ë°›ëŠ” ê°’ì´ ìˆë‹¤ë©´ true
 			
-			// ¼­¹ö·ÎºÎÅÍ µ¥ÀÌÅÍ ÀĞ¾î¿À±â
-
+			// ì„œë²„ë¡œë¶€í„° ë°ì´í„° ì½ì–´ì˜¤ê¸°
 			BufferedReader br = new BufferedReader(new InputStreamReader(myConnet.getInputStream(),"UTF-8"));
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			
-			while((line = br.readLine()) != null) { // ÀĞÀ» ¼ö ÀÖÀ» ¶§ ±îÁö ¹İº¹
-				sb.append(line.replace("[", "").replace("]", ""));
+			while((line = br.readLine()) != null) { // ì½ì„ ìˆ˜ ìˆì„ ë•Œ ê¹Œì§€ ë°˜ë³µ
+				sb.append(line);
 			}
-			JSONObject obj = new JSONObject(sb.toString()); // jsonÀ¸·Î º¯°æ (¿ªÁ÷·ÄÈ­)
-			System.out.println("id= " + obj.getString("id") + " / name= " + obj.getString("name")+
-			                   "phone= " + obj.getString("phone") + " / name= " + obj.getString("address"));
-			
+			JSONArray array = new JSONArray(sb.toString());
+			for(int i=0;i<array.length();i++) {
+				JSONObject obj = array.getJSONObject(i); // jsonìœ¼ë¡œ ë³€ê²½ (ì—­ì§ë ¬í™”)
+				System.out.println("id= " + obj.getString("id") + " / name= " + obj.getString("name")+
+		                   "phone= " + obj.getString("phone") + " / name= " + obj.getString("address"));
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
